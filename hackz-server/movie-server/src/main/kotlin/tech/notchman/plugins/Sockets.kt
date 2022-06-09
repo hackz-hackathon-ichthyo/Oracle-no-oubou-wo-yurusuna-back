@@ -27,6 +27,9 @@ fun Application.configureSockets() {
                             close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
                         }
                     }
+                    else -> {
+
+                    }
                 }
             }
         }
