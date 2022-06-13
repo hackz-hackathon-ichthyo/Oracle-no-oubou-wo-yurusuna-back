@@ -35,8 +35,6 @@ private fun commonModule() = module {
 
 private fun userModule(config: Config) = module {
     singleOf(::AuthenticatedUser)
-    singleOf(::ChangeOwnPassword)
-    singleOf(::ChangePassword)
     singleOf(::CreateUser)
     singleOf(::DeleteUser)
     singleOf(::GetUser)
