@@ -1,13 +1,10 @@
 package routes
 
-import controllers.UserController
-import io.ktor.application.call
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.get
-import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.route
+
+import io.ktor.server.application.*
+import io.ktor.server.locations.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 @KtorExperimentalLocationsAPI

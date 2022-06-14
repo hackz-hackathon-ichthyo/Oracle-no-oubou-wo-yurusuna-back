@@ -1,48 +1,45 @@
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.application.log
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Locations
-import io.ktor.response.respond
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.locations.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import mapper.ObjectMapperBuilder
 import module.KoinModuleBuilder
-import org.koin.ktor.ext.installKoin
+import module.KoinModuleBuilder.modules
+import org.koin.core.context.startKoin
 import routes.root
+import javax.xml.transform.OutputKeys.INDENT
 
-@KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 fun Application.main() {
-    installKoin(KoinModuleBuilder.modules())
 
-    install(ContentNegotiation) {
-        jackson {
-            ObjectMapperBuilder.build(this)
-            configure(SerializationFeature.INDENT_OUTPUT, true)
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        }
+    startKoin{
+        modules(KoinModuleBuilder.modules())
     }
+//    install(ContentNegotiation) {
+//        jackson {
+//            ObjectMapperBuilder.build(this)
+//            configure(INDENT, true)
+//            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+//        }
+//    }
     install(StatusPages) {
-        exception<Throwable> { cause ->
-            log.error(cause.message, cause)
-            call.respond(HttpStatusCode.InternalServerError)
+        exception<Throwable> { call, cause ->
+            if(cause is AuthorizationException) {
+                call.respondText(text = "403: $cause" , status = HttpStatusCode.Forbidden)
+            } else {
+                call.respondText(text = "500: $cause" , status = HttpStatusCode.InternalServerError)
+            }
         }
     }
     install(Locations)
     install(CORS) {
-        method(HttpMethod.Options)
-        method(HttpMethod.Put)
-        method(HttpMethod.Delete)
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
         anyHost()
     }
 
@@ -50,3 +47,4 @@ fun Application.main() {
         root()
     }
 }
+class AuthorizationException(override val message: String?) : Throwable()
