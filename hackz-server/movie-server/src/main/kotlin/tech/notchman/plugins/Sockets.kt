@@ -4,9 +4,8 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.time.Duration
 import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import tech.notchman.repository.ChatRepository
 
 fun Application.configureSockets() {
     install(WebSockets) {
@@ -15,9 +14,13 @@ fun Application.configureSockets() {
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
+    val chatRepository = ChatRepository();
 
     routing {
-        webSocket("/") { // websocketSession
+        webSocket("/rooms/{chat_id}") { // websocketSession
+            val chatId = call.parameters["chat_id"]
+            outgoing.send(Frame.Text("YOUR CHAT ROOM: $chatId"))
+
             for (frame in incoming) {
                 when (frame) {
                     is Frame.Text -> {
