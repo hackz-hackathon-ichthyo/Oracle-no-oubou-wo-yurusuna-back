@@ -11,7 +11,21 @@ env:
   API_ECR_REPOSITORY: ${{ secrets.STG_MOVIE_SERVER_REGISTRY_NAME }}
 
 jobs:
-  build-and-deploy:
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification start
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: team_〇racleの横暴を許すな
+          SLACK_USERNAME: デスマTV サーバー CI/CD
+          SLACK_ICON_EMOJI: ':tv:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'START STG RELEASE'
+
+  build:
+    needs: start
     runs-on: ubuntu-latest
     steps:
       - name: Check out our project.
@@ -40,3 +54,68 @@ jobs:
           docker build -t $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG -f ./hackz-server/movie-server/Dockerfile_stg ./hackz-server/movie-server/ 
           docker push $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Slack notification push complete
+        if: ${{ always() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: team_〇racleの横暴を許すな
+          SLACK_USERNAME: デスマTV サーバー CI/CD
+          SLACK_ICON_EMOJI: ':tv:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'PUSHED STG IMAGE'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update kubeconfig
+        run: aws --region ap-northeast-1 eks update-kubeconfig --name movie-cluster --kubeconfig ./kubeconfig
+
+      - uses: azure/setup-kubectl@v1
+      - name: Rollout
+        run: |
+          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout restart deployment app-deployment
+
+      - name: Slack notification applied
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: slack_channel_name
+          SLACK_USERNAME: デスマTV サーバー CI/CD
+          SLACK_ICON_EMOJI: ':tv:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'APPLIED STG ROLLOUT'
+
+      - uses: azure/setup-kubectl@v1
+      - name: Check status
+        run: |
+          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout status deployment app-deployment
+
+      - name: Slack notification complete
+        if: ${{ always() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: team_〇racleの横暴を許すな
+          SLACK_USERNAME: デスマTV サーバー CI/CD
+          SLACK_ICON_EMOJI: ':tv:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'COMPLETE STG ROLLOUT'
+
+  finish:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification finish
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: team_〇racleの横暴を許すな
+          SLACK_USERNAME: デスマTV サーバー CI/CD
+          SLACK_ICON_EMOJI: ':tv:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'FINISHED STG RELEASE'
