@@ -85,7 +85,7 @@ jobs:
       - uses: azure/setup-kubectl@v1
       - name: Rollout
         run: |
-          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout restart deployment app-deployment
+          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout restart deployment movie-server
 
       - name: Slack notification applied
         if: ${{ success() }}
@@ -101,7 +101,7 @@ jobs:
       - uses: azure/setup-kubectl@v1
       - name: Check status
         run: |
-          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout status deployment app-deployment
+          kubectl --kubeconfig=./kubeconfig -n stg-movie-server rollout status deployment movie-server
 
       - name: Slack notification complete
         if: ${{ always() }}
