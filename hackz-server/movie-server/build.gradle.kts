@@ -23,6 +23,11 @@ repositories {
 }
 
 dependencies {
+//    implementation("io.ktor:ktor-server-netty:2.0.2")
+//    implementation("io.ktor:ktor-server-websockets:2.0.2")
+//    implementation("io.ktor:ktor-server-call-logging:2.0.2")
+//    implementation("io.ktor:ktor-server-default-headers:2.0.2")
+//    implementation("io.ktor:ktor-server-sessions:2.0.2")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auto-head-response-jvm:$ktor_version")
