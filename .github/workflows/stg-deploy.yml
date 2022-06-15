@@ -6,9 +6,6 @@ on:
       - main
       - feature/add-cicd
 
-env:
-
-
 jobs:
   start:
     runs-on: ubuntu-latest
