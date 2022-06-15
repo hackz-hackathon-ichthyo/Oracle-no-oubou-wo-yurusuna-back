@@ -92,7 +92,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: slack_channel_name
+          SLACK_CHANNEL: team_〇racleの横暴を許すな
           SLACK_USERNAME: デスマTV サーバー CI/CD
           SLACK_ICON_EMOJI: ':tv:'
           SLACK_COLOR: ${{ job.status }}
