@@ -43,6 +43,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
+          DOCKER_BUILDKIT: 1
           API_ECR_REPOSITORY: ${{ secrets.STG_MOVIE_SERVER_REGISTRY_NAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
@@ -50,7 +51,11 @@ jobs:
           # Docker コンテナを作成し
           # ECR にプッシュして
           # ECS にデプロイできるようにする。
-          docker build -t $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG -f ./hackz-server/movie-server/Dockerfile_stg ./hackz-server/movie-server/ 
+          docker build \
+          --cache-from=$ECR_REGISTRY/$ECR_REPOSITORY:latest \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
+          -t $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG \
+          -f ./hackz-server/movie-server/Dockerfile_stg ./hackz-server/movie-server/ 
           docker push $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -91,14 +96,14 @@ jobs:
           ECR_REPOSITORY: stg-movie-server
           IMAGE_TAG: ${{ github.sha }}
         with:
-          args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          args: set image deployment/stg-movie-server $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n stg-movie-server
 
       - name: verify deployment
         uses: kodermax/kubectl-aws-eks@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: rollout status deployment/stg-movie-server
+          args: rollout status deployment/stg-movie-server -n stg-movie-server
 
 #      - name: Slack notification complete
 #        if: ${{ always() }}
