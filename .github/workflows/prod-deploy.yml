@@ -45,7 +45,7 @@ jobs:
         id: build-image
         env:
           DOCKER_BUILDKIT: 1
-          API_ECR_REPOSITORY: ${{ secrets.STG_MOVIE_SERVER_REGISTRY_NAME }}
+          API_ECR_REPOSITORY: ${{ secrets.PROD_MOVIE_SERVER_REGISTRY_NAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -56,7 +56,7 @@ jobs:
           --cache-from=$ECR_REGISTRY/$ECR_REPOSITORY:latest \
           --build-arg BUILDKIT_INLINE_CACHE=1 \
           -t $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG \
-          -f ./hackz-server/movie-server/Dockerfile_stg ./hackz-server/movie-server/ 
+          -f ./hackz-server/movie-server/Dockerfile_prod ./hackz-server/movie-server/ 
           docker push $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG"
 
