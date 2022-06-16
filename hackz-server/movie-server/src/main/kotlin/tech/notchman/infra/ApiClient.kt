@@ -11,7 +11,6 @@ class ApiClient {
     }
 
     private val objectMapper: ObjectMapper = ObjectMapper()
-
     private val client = OkHttpClient.Builder().build()
     private val token = "hogehoge"
     fun getIssues(): Issues {

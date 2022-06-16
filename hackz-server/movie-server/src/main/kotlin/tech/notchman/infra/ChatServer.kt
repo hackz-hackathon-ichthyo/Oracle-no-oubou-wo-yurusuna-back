@@ -1,17 +1,12 @@
 package tech.notchman.infra
 
 
-import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.*
 import java.util.*
 import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 
-/**
- * Class in charge of the logic of the chat server.
- * It contains handlers to events and commands to send messages to specific users in the server.
- */
 class ChatServer {
     val usersCounter = AtomicInteger()
     val memberNames = ConcurrentHashMap<String, String>()
@@ -36,12 +31,14 @@ class ChatServer {
             socket.send(Frame.Text(message))
         }
     }
+
     suspend fun memberRenamed(member: String, to: String) {
         // Re-sets the member name.
         val oldName = memberNames.put(member, to) ?: member
         // Notifies everyone in the server about this change.
         broadcast("server", "Member renamed from $oldName to $to")
     }
+
     suspend fun memberLeft(member: String, socket: WebSocketSession) {
         // Removes the socket connection for this member
         val connections = members[member]
@@ -54,15 +51,19 @@ class ChatServer {
             broadcast("server", "Member left: $name.")
         }
     }
+
     suspend fun who(sender: String) {
         members[sender]?.send(Frame.Text(memberNames.values.joinToString(prefix = "[server::who] ")))
     }
+
     suspend fun help(sender: String) {
         members[sender]?.send(Frame.Text("[server::help] Possible commands are: /user, /help and /who"))
     }
+
     suspend fun sendTo(recipient: String, sender: String, message: String) {
         members[recipient]?.send(Frame.Text("[$sender] $message"))
     }
+
     suspend fun message(sender: String, message: String) {
         // Pre-format the message to be send, to prevent doing it for all the users or connected sockets.
         val name = memberNames[sender] ?: sender
@@ -80,15 +81,18 @@ class ChatServer {
             }
         }
     }
+
     private suspend fun broadcast(message: String) {
         members.values.forEach { socket ->
             socket.send(Frame.Text(message))
         }
     }
+
     private suspend fun broadcast(sender: String, message: String) {
         val name = memberNames[sender] ?: sender
         broadcast("[$name] $message")
     }
+
     suspend fun List<WebSocketSession>.send(frame: Frame) {
         forEach {
             try {
