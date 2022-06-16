@@ -24,7 +24,6 @@ fun Application.configureSockets() {
         webSocket("/rooms/{chat_id}") {
             val thisConnection = Connection(this)
             thisConnections += thisConnection
-            // websocketSession
             val chatId = call.parameters["chat_id"]
             outgoing.send(Frame.Text("YOUR CHAT ROOM: $chatId"))
             try {
