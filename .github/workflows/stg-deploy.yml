@@ -7,21 +7,21 @@ on:
       - feature/add-cicd
 
 jobs:
-  start:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Slack notification start
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: team_〇racleの横暴を許すな
-          SLACK_USERNAME: デスマTV サーバー CI/CD
-          SLACK_ICON_EMOJI: ':tv:'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'START STG RELEASE'
+#  start:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Slack notification start
+#        uses: rtCamp/action-slack-notify@v2
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_CHANNEL: team_〇racleの横暴を許すな
+#          SLACK_USERNAME: デスマTV サーバー CI/CD
+#          SLACK_ICON_EMOJI: ':tv:'
+#          SLACK_COLOR: ${{ job.status }}
+#          SLACK_MESSAGE: 'START STG RELEASE'
 
   build:
-    needs: start
+#    needs: start
     runs-on: ubuntu-latest
     steps:
       - name: Check out our project.
@@ -54,16 +54,16 @@ jobs:
           docker push $ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$API_ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Slack notification push complete
-        if: ${{ always() }}
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: team_〇racleの横暴を許すな
-          SLACK_USERNAME: デスマTV サーバー CI/CD
-          SLACK_ICON_EMOJI: ':tv:'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'PUSHED STG IMAGE'
+#      - name: Slack notification push complete
+#        if: ${{ always() }}
+#        uses: rtCamp/action-slack-notify@v2
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_CHANNEL: team_〇racleの横暴を許すな
+#          SLACK_USERNAME: デスマTV サーバー CI/CD
+#          SLACK_ICON_EMOJI: ':tv:'
+#          SLACK_COLOR: ${{ job.status }}
+#          SLACK_MESSAGE: 'PUSHED STG IMAGE'
 
   deploy:
     needs: build
@@ -107,27 +107,27 @@ jobs:
         with:
           args: rollout status deployment/stg-movie-server
 
-      - name: Slack notification complete
-        if: ${{ always() }}
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: team_〇racleの横暴を許すな
-          SLACK_USERNAME: デスマTV サーバー CI/CD
-          SLACK_ICON_EMOJI: ':tv:'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'COMPLETE STG ROLLOUT'
+#      - name: Slack notification complete
+#        if: ${{ always() }}
+#        uses: rtCamp/action-slack-notify@v2
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_CHANNEL: team_〇racleの横暴を許すな
+#          SLACK_USERNAME: デスマTV サーバー CI/CD
+#          SLACK_ICON_EMOJI: ':tv:'
+#          SLACK_COLOR: ${{ job.status }}
+#          SLACK_MESSAGE: 'COMPLETE STG ROLLOUT'
 
-  finish:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Slack notification finish
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: team_〇racleの横暴を許すな
-          SLACK_USERNAME: デスマTV サーバー CI/CD
-          SLACK_ICON_EMOJI: ':tv:'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'FINISHED STG RELEASE'
+#  finish:
+#    needs: deploy
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Slack notification finish
+#        uses: rtCamp/action-slack-notify@v2
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_CHANNEL: team_〇racleの横暴を許すな
+#          SLACK_USERNAME: デスマTV サーバー CI/CD
+#          SLACK_ICON_EMOJI: ':tv:'
+#          SLACK_COLOR: ${{ job.status }}
+#          SLACK_MESSAGE: 'FINISHED STG RELEASE'
