@@ -1,10 +1,11 @@
-name: Deploy to Staging
+name: Deploy to Production
 
 on:
   push:
-    branches:
-      - main
-      - feature/add-cicd
+    branches-ignore:
+      - '**'
+    tags:
+      - 'v*'
 
 jobs:
   start:
@@ -18,7 +19,7 @@ jobs:
           SLACK_USERNAME: デスマTV サーバー CI/CD
           SLACK_ICON_EMOJI: ':tv:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'START STG RELEASE'
+          SLACK_MESSAGE: 'START PROD RELEASE'
 
   build:
     needs: start
@@ -68,7 +69,7 @@ jobs:
           SLACK_USERNAME: デスマTV サーバー CI/CD
           SLACK_ICON_EMOJI: ':tv:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'PUSHED STG IMAGE'
+          SLACK_MESSAGE: 'PUSHED PROD IMAGE'
 
   deploy:
     needs: build
@@ -93,17 +94,17 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.MOVIE_CLUSTER_KUBE_CONFIG }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: stg-movie-server
+          ECR_REPOSITORY: prod-movie-server
           IMAGE_TAG: ${{ github.sha }}
         with:
-          args: set image deployment/stg-movie-server $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n stg-movie-server
+          args: set image deployment/prod-movie-server $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n movie-server
 
       - name: verify deployment
         uses: kodermax/kubectl-aws-eks@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.MOVIE_CLUSTER_KUBE_CONFIG }}
         with:
-          args: rollout status deployment/stg-movie-server -n stg-movie-server
+          args: rollout status deployment/prod-movie-server -n movie-server
 
       - name: Slack notification complete
         if: ${{ always() }}
@@ -114,7 +115,7 @@ jobs:
           SLACK_USERNAME: デスマTV サーバー CI/CD
           SLACK_ICON_EMOJI: ':tv:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'COMPLETE STG ROLLOUT'
+          SLACK_MESSAGE: 'COMPLETE PROD ROLLOUT'
 
   finish:
     needs: deploy
@@ -128,4 +129,4 @@ jobs:
           SLACK_USERNAME: デスマTV サーバー CI/CD
           SLACK_ICON_EMOJI: ':tv:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: 'FINISHED STG RELEASE'
+          SLACK_MESSAGE: 'FINISHED PROD RELEASE'
