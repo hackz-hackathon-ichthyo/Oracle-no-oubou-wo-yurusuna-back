@@ -12,7 +12,7 @@ class ApiClient {
 
     private val objectMapper: ObjectMapper = ObjectMapper()
     private val client = OkHttpClient.Builder().build()
-    private val token = "hogehoge"
+    private val token = "<REPLACE HERE>"
     fun getIssues(): Issues {
         val request = Request.Builder().url(BASE_URL + "").header("Authorization", "Bearer $token").build()
         client.newCall(request).execute().use { response ->

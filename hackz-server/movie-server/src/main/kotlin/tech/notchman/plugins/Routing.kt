@@ -20,6 +20,5 @@ fun Application.configureRouting() {
         get("/progress") {
             call.respond(apiController.getProgress())
         }
-
     }
 }
