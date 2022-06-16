@@ -79,12 +79,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.DEPLOY_CONTAINER_TO_EKS_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Update kubeconfig
-        id: kubeconfig
-        run: |
-          aws --region ap-northeast-1 eks update-kubeconfig --name movie-cluster --kubeconfig ./kubeconfig
-          echo "::set-output name=config::$(base64 kubeconfig)"
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -92,7 +86,7 @@ jobs:
       - name: deploy to cluster
         uses: kodermax/kubectl-aws-eks@master
         env:
-          KUBE_CONFIG_DATA: ${{ steps.kubeconfig.outputs.config }}
+          KUBE_CONFIG_DATA: ${{ secrets.MOVIE_CLUSTER_KUBE_CONFIG }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: stg-movie-server
           IMAGE_TAG: ${{ github.sha }}
