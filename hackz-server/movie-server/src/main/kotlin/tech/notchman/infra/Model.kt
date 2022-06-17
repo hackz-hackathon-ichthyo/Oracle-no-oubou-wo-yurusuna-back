@@ -1,9 +1,16 @@
 package tech.notchman.infra
-
-data class Issue(
-    val id: Int, val state: String
-)
-
-data class Issues(
-    val issues: List<Issue>
-)
+//
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+//import com.fasterxml.jackson.annotation.JsonProperty
+//
+//@JsonIgnoreProperties(ignoreUnknown=true)
+//data class Issue(
+//    @JsonProperty("id")
+//    val id: Int,
+//    @JsonProperty("state")
+//    val state: String
+//)
+//@JsonIgnoreProperties(ignoreUnknown=true)
+//data class Issues(
+//    val issues: Array<Issue>
+//)

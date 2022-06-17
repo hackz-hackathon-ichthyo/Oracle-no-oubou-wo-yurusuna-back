@@ -3,16 +3,16 @@ package tech.notchman.controllers
 import tech.notchman.infra.ApiClient
 
 class ApiController(private val apiClient: ApiClient) {
-    
-    fun getProgress(): Float {
+
+    fun getProgress(): Progress {
         val issues = apiClient.getIssues()
-        val len = issues.issues.size
-        var count = 0.0f
-        for (issue in issues.issues) {
+        val len = issues.size
+        var count = 0
+        for (issue in issues) {
             if (issue.state != "open") {
-                count += 1.0f
+                count += 1
             }
         }
-        return count / len
+        return Progress(progress = count.toFloat() / len.toFloat(), count = len, open_cnt = count)
     }
 }

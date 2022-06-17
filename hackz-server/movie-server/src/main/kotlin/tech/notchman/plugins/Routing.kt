@@ -6,7 +6,10 @@ import io.ktor.server.plugins.autohead.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import tech.notchman.controllers.ApiController
+import tech.notchman.controllers.Progress
 import tech.notchman.infra.ApiClient
 
 fun Application.configureRouting() {
@@ -18,7 +21,11 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         get("/progress") {
-            call.respond(apiController.getProgress())
+            val response: Progress = apiController.getProgress()
+            println(response)
+            val responseStr = Json.encodeToString(response)
+            println(responseStr)
+            call.respond(responseStr)
         }
     }
 }
