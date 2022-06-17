@@ -2,10 +2,11 @@ package tech.notchman.infra
 
 
 import io.ktor.websocket.*
-import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.channels.ClosedSendChannelException
 import java.util.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 class ChatServer {
     val usersCounter = AtomicInteger()

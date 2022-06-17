@@ -15,7 +15,9 @@ class ApiClient {
     private val client = OkHttpClient.Builder().build()
     private val token = "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"
     fun getIssues(): Issues {
-        val request = Request.Builder().url(BASE_URL + "repos/hackz-hackathon-ichthyo/Oracle-no-oubou-wo-yurusuna-back/issues").header("Authorization", "Bearer $token").build()
+        val request =
+            Request.Builder().url(BASE_URL + "repos/hackz-hackathon-ichthyo/Oracle-no-oubou-wo-yurusuna-back/issues")
+                .header("Authorization", "Bearer $token").build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 //エラーログを確認

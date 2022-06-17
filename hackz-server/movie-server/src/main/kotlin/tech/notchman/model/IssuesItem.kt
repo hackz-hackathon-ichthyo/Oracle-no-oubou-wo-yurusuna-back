@@ -2,7 +2,7 @@ package tech.notchman.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class IssuesItem(
     val active_lock_reason: String = "",
     val author_association: String = "",
