@@ -7,7 +7,7 @@ COPY gradle.properties .
 COPY src ./src
 
 # Build a release artifact.
-RUN gradle installDist
+RUN gradle installDist --parallel
 
 FROM openjdk:18-jdk
 EXPOSE 8080:8080
