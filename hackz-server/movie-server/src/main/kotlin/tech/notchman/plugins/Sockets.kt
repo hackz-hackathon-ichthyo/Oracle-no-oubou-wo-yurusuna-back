@@ -1,12 +1,13 @@
 package tech.notchman.plugins
 
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import tech.notchman.infra.Connection
+import tech.notchman.repository.ChatRepository
 import java.time.Duration
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
-import io.ktor.server.routing.*
+import java.util.*
 
 fun Application.configureSockets() {
     install(WebSockets) {
@@ -15,23 +16,46 @@ fun Application.configureSockets() {
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
+    val chatRepository = ChatRepository();
 
     routing {
-        webSocket("/") { // websocketSession
-            for (frame in incoming) {
-                when (frame) {
-                    is Frame.Text -> {
-                        val text = frame.readText()
-                        outgoing.send(Frame.Text("YOU SAID: $text"))
-                        if (text.equals("bye", ignoreCase = true)) {
-                            close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                        }
-                    }
-                    else -> {
-
+        //ルームの振り分け格納
+        val thisConnections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+        webSocket("/rooms/{chat_id}") {
+            val thisConnection = Connection(this)
+            thisConnections += thisConnection
+            // websocketSession
+            val chatId = call.parameters["chat_id"]
+            outgoing.send(Frame.Text("YOUR CHAT ROOM: $chatId"))
+            try {
+                send("You are connected! There are ${thisConnections.count()} users here.")
+                for (frame in incoming) {
+                    frame as? Frame.Text ?: continue
+                    val receivedText = frame.readText()
+                    thisConnections.forEach {
+                        it.session.send(receivedText)
                     }
                 }
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+            } finally {
+                println("Removing $thisConnection!")
+                thisConnections -= thisConnection
             }
+//            for (frame in incoming) {
+//                when (frame) {
+//                    is Frame.Text -> {
+//                        val text = frame.readText()
+//                        outgoing.send(Frame.Text("YOU SAID: $text"))
+//                        if (text.equals("bye", ignoreCase = true)) {
+//                            close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+//                        }
+//                    }
+//                    else -> {
+//
+//                    }
+//                }
+//            }
         }
     }
 }

@@ -5,21 +5,21 @@ services:
       context: .
     ports:
       - "8081:8080"
-  redis:
-    image: redis:alpine
-    command: redis-server
   db:
     image: postgres:alpine
     restart: unless-stopped
     volumes:
       - db:/var/lib/postgresql/data
-      - ./dmeeting-platform/initdb:/docker-entrypoint-initdb.d
+      - ./initdb:/docker-entrypoint-initdb.d
       - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=live
+      - POSTGRES_DB=user
       - TZ=Asia/Tokyo
+  redis:
+    image: "redis:alpine"
+    command: redis-server
 
 volumes:
   db:

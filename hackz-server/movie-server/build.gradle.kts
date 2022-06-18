@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auto-head-response-jvm:$ktor_version")
@@ -34,6 +35,9 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
