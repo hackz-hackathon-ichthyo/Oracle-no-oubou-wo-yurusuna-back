@@ -4,7 +4,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.autohead.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import tech.notchman.controllers.ApiController
@@ -27,11 +26,13 @@ fun Application.configureRouting() {
 //            println(responseStr)
             call.respond(responseStr)
         }
-        post("/channel/create"){
-            call.respond("{" +
-                    "\"broadcast_url\":\"https://example.com\"," +
-                    "\"broadcast_secret\":\"example-token\"" +
-                    "}")
+        post("/channel/create") {
+            call.respond(
+                "{" +
+                        "\"broadcast_url\":\"https://example.com\"," +
+                        "\"broadcast_secret\":\"example-token\"" +
+                        "}"
+            )
         }
     }
 }
