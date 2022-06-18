@@ -37,9 +37,15 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
+
     implementation("org.postgresql:postgresql:42.3.6")
     implementation("org.jdbi:jdbi3-sqlobject:3.30.0")
     implementation("org.jdbi:jdbi3-kotlin:3.30.0")
+
+//    AWS SDK and Amazon IVS
+    implementation("software.amazon.awssdk:protocol-core:2.17.213")
+    implementation("software.amazon.awssdk:ivs:2.17.213")
+
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
 // Koin Core features
     implementation("io.insert-koin:koin-core:$koin_version")

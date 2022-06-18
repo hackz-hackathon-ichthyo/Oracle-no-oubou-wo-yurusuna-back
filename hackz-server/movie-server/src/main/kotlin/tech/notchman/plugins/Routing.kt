@@ -28,12 +28,14 @@ fun Application.configureRouting() {
             call.respond(responseStr)
         }
         post("/channel/create") {
+
             val response: Channel = apiController.getChannelInfo("example")
             call.respond(Json.encodeToString(response))
 //            call.respond("{" +
 //                    "\"broadcast_url\":\"https://example.com\"," +
 //                    "\"broadcast_secret\":\"example-token\"" +
 //                    "}")
+
         }
     }
 }
