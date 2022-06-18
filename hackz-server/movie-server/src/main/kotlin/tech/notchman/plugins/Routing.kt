@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import tech.notchman.controllers.ApiController
 import tech.notchman.controllers.Progress
 import tech.notchman.infra.ApiClient
+import tech.notchman.infra.Channel
 
 
 fun Application.configureRouting() {
@@ -27,12 +28,14 @@ fun Application.configureRouting() {
             call.respond(responseStr)
         }
         post("/channel/create") {
-            call.respond(
-                "{" +
-                        "\"broadcast_url\":\"https://example.com\"," +
-                        "\"broadcast_secret\":\"example-token\"" +
-                        "}"
-            )
+
+            val response: Channel = apiController.getChannelInfo("example")
+            call.respond(Json.encodeToString(response))
+//            call.respond("{" +
+//                    "\"broadcast_url\":\"https://example.com\"," +
+//                    "\"broadcast_secret\":\"example-token\"" +
+//                    "}")
+
         }
     }
 }

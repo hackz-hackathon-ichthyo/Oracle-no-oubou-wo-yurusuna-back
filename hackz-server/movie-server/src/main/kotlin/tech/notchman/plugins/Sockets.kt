@@ -33,7 +33,11 @@ fun Application.configureSockets() {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
                     thisConnections.forEach {
-                        it.session.send(receivedText)
+                        try {
+                            it.session.send(receivedText)
+                        }catch(e:Exception){
+
+                        }
                     }
                 }
             } catch (e: Exception) {
