@@ -20,7 +20,7 @@ class ApiClient {
     fun getIssues(): Issues {
         val token = config.apiToken
         val request =
-            Request.Builder().url(BASE_URL + "repos/hackz-hackathon-ichthyo/Oracle-no-oubou-wo-yurusuna-back/issues")
+            Request.Builder().url(BASE_URL + "repos/hackz-hackathon-ichthyo/Oracle-no-oubou-wo-yurusuna-back/issues?state=all")
                 .header("Authorization", "Bearer $token").build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {

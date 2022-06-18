@@ -27,8 +27,8 @@ class ApiController(private val apiClient: ApiClient) {
         } else {
             val response = awsClient.getLiveUrl(id)
             val uuid = UUID.randomUUID().toString()
-            channelDao.makeRecord(uuid, id, response.secret, response.url)
-            return Channel( id, response.secret, response.url)
+            channelDao.makeRecord(uuid, id, response.secretKey, response.streamServerUrl, response.playBackUrl)
+            return Channel(id, response.streamServerUrl, response.playBackUrl, response.secretKey)
         }
 
     }
