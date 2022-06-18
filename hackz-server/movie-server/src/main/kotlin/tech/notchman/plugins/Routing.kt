@@ -22,10 +22,16 @@ fun Application.configureRouting() {
         }
         get("/progress") {
             val response: Progress = apiController.getProgress()
-            println(response)
+//            println(response)
             val responseStr = Json.encodeToString(response)
-            println(responseStr)
+//            println(responseStr)
             call.respond(responseStr)
+        }
+        post("/channel/create"){
+            call.respond("{" +
+                    "\"broadcast_url\":\"https://example.com\"," +
+                    "\"broadcast_secret\":\"example-token\"" +
+                    "}")
         }
     }
 }

@@ -9,6 +9,7 @@ class ApiController(private val apiClient: ApiClient) {
         val len = issues.size
         var count = 0
         for (issue in issues) {
+            print(issue)
             if (issue.state != "open") {
                 count += 1
             }
