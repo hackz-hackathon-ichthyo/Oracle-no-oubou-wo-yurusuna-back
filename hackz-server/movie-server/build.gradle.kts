@@ -1,7 +1,7 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
-
+val koin_version= "3.2.0"
 plugins {
     application
     kotlin("jvm") version "1.7.0"
@@ -38,6 +38,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-
+// Koin Core features
+    implementation ("io.insert-koin:koin-core:$koin_version")
+// Koin Test features
+    testImplementation ("io.insert-koin:koin-test:$koin_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
